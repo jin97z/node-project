@@ -56,12 +56,20 @@ app.post("/login", (req, res) => {
     //将令牌发给登录过的用户
     let token = util.encryption([username, +new Date()].join("|"));
     res.json({
-      token,
-      isSuccess: true,
+      code: 0,
+      status: 0,
+      success: true,
+      msg: "成功",
+      date: new Date().getTime(),
+      data: token,
     });
   } else {
     res.json({
-      isSuccess: false,
+      code: 100,
+      status: 1,
+      success: false,
+      msg: "账号或密码错误",
+      date: new Date().getTime(),
     });
   }
 });
