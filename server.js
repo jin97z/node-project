@@ -1,14 +1,17 @@
 var express = require("express");
 var app = express();
 
+var fs = require("fs");
+var path = require("path");
+
 // 处理程序之前，在中间件中对传入的请求体进行解析（response body）
-const md5 = require("js-md5");
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+// const md5 = require("js-md5");
+// const bodyParser = require("body-parser");
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded());
 
 //解决跨域的问题：设置静态资源目录 页面直接访问这个后台地址
-app.use("/", express.static("public"));
+// app.use("/", express.static("public"));
 
 //引入aes的代码
 const util = require("./utils");
@@ -44,8 +47,9 @@ app.use("*", (req, res, next) => {
     } catch (error) {
       res.json("非法请求2");
     }
+  } else {
+    next();
   }
-  next();
 });
 
 app.post("/login", (req, res) => {
@@ -73,35 +77,24 @@ app.post("/login", (req, res) => {
     });
   }
 });
-app.get("/list", (req, res) => {
-  res.json([1, 2, 3, 4]);
+
+app.get("/list", function (req, res) {
+  fs.readFile(__dirname + "/" + "users.json", "utf8", function (err, data) {
+    res.json({
+      code: 0,
+      status: 0,
+      success: true,
+      msg: "账号或密码错误",
+      date: new Date().getTime(),
+      data: JSON.parse(data),
+    });
+  });
 });
+
 app.get("/list2", (req, res) => {
   res.json([12, 22, 32, 42]);
 });
+
 app.listen(8888, () => {
   console.log("app is sunning, 应用实例，访问地址为 http://127.0.0.1:8888");
 });
-
-// app.use('/public', express.static('public'));
-
-// app.get("/index.html", function (req, res) {
-//   res.sendFile(__dirname + "/" + "index.html");
-// });
-
-// app.get("/login", function (req, res) {
-//   // 输出 JSON 格式
-//   var response = {
-//     userName: req.query.userName,
-//     passWord: req.query.passWord,
-//   };
-//   console.log(response);
-//   res.end(JSON.stringify(response));
-// });
-
-// var server = app.listen(8081, function () {
-//   var host = server.address().address;
-//   var port = server.address().port;
-
-//   console.log("应用实例，访问地址为 http://%s:%s", host, port);
-// });
