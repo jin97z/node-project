@@ -9,6 +9,8 @@ const cheerio = require("cheerio");
 
 // 处理程序之前，在中间件中对传入的请求体进行解析（response body）
 const md5 = require("js-md5");
+
+// const utility = require("require");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
