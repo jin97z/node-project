@@ -5,13 +5,13 @@ var fs = require("fs");
 var path = require("path");
 
 // 处理程序之前，在中间件中对传入的请求体进行解析（response body）
-// const md5 = require("js-md5");
-// const bodyParser = require("body-parser");
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded());
+const md5 = require("js-md5");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
 //解决跨域的问题：设置静态资源目录 页面直接访问这个后台地址
-// app.use("/", express.static("public"));
+app.use("/", express.static("public"));
 
 //引入aes的代码
 const util = require("./utils");
@@ -35,7 +35,14 @@ app.use("*", (req, res, next) => {
   if (req.baseUrl !== "/login") {
     // 在这个req的headers里找到token
     let { token } = req.headers;
-    if (!token) return res.json("非法请求");
+    if (!token)
+      return res.json({
+        code: 200,
+        status: 200,
+        success: true,
+        msg: "非法请求",
+        date: new Date().getTime(),
+      });
     // try里如果报错，将会走catch里 没传、token不对都会报错
     try {
       // 对token进行解密
@@ -45,7 +52,13 @@ app.use("*", (req, res, next) => {
       console.log(`${username}在${time}请求了${req.baseUrl}`);
       next();
     } catch (error) {
-      res.json("非法请求2");
+      res.json({
+        code: 200,
+        status: 200,
+        success: true,
+        msg: "非法请求",
+        date: new Date().getTime(),
+      });
     }
   } else {
     next();
@@ -89,10 +102,6 @@ app.get("/list", function (req, res) {
       data: JSON.parse(data),
     });
   });
-});
-
-app.get("/list2", (req, res) => {
-  res.json([12, 22, 32, 42]);
 });
 
 app.listen(8888, () => {
