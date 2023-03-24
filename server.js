@@ -68,6 +68,7 @@ app.use("*", (req, res, next) => {
   }
 });
 
+// 登录接口
 app.post("/login", (req, res) => {
   let { username, password } = req.body;
   //   let str = fmtPwd("97529752");
@@ -94,6 +95,7 @@ app.post("/login", (req, res) => {
   }
 });
 
+// 获取本地数据
 app.get("/list", function (req, res) {
   fs.readFile(__dirname + "/" + "users.json", "utf8", function (err, data) {
     res.json({
@@ -107,6 +109,7 @@ app.get("/list", function (req, res) {
   });
 });
 
+// 爬取nodejs信息
 app.get("/node", function (req, res, next) {
   superagent.get("https://cnodejs.org/").end(function (err, sres) {
     if (err) {
