@@ -4,8 +4,10 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "express": "^4.18.2",
-    "js-md5": "^0.7.3"
+    "js-md5": "^0.7.3",
+    "superagent": "^8.0.9"
   },
   "devDependencies": {},
   "scripts": {

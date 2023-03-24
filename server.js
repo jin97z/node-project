@@ -2,7 +2,10 @@ var express = require("express");
 var app = express();
 
 var fs = require("fs");
-var path = require("path");
+
+const superagent = require("superagent");
+
+const cheerio = require("cheerio");
 
 // 处理程序之前，在中间件中对传入的请求体进行解析（response body）
 const md5 = require("js-md5");
@@ -100,6 +103,35 @@ app.get("/list", function (req, res) {
       msg: "账号或密码错误",
       date: new Date().getTime(),
       data: JSON.parse(data),
+    });
+  });
+});
+
+app.get("/node", function (req, res, next) {
+  superagent.get("https://cnodejs.org/").end(function (err, sres) {
+    if (err) {
+      return next();
+    }
+    var $ = cheerio.load(sres.text);
+    var items = [];
+    $("#topic_list .topic_title").each(function (idx, element) {
+      var $element = $(element);
+      items.push({
+        title: $element.attr("title"),
+        href: $element.attr("href"),
+      });
+    });
+    $("#topic_list .user_avatar img").each(function (idx, element) {
+      var $element = $(element);
+      items[idx]["image"] = $element.attr("src");
+    });
+    res.json({
+      code: 0,
+      status: 0,
+      success: true,
+      msg: "成功",
+      date: new Date().getTime(),
+      data: items,
     });
   });
 });
